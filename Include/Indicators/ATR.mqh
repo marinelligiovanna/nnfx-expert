@@ -17,10 +17,12 @@ class ATR : public Indicator
 private:
 
 public:
-   ATR() : Indicator("ATR", CHART_INDICATOR){} ;
+   ATR(MqlParam &params[]) : Indicator("ATR", CHART_INDICATOR, params){} ;
    ~ATR() {};
    
    double getValue(string symbol, int bufferNum, int shift){
-      return iATR(symbol, bufferNum, 14, shift); 
+      int atrPeriod = getParamLong(0);
+   
+      return iATR(symbol, bufferNum, atrPeriod, shift); 
    }
   };

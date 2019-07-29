@@ -18,10 +18,25 @@ class KusKusStartlight : public Indicator
 private:
 
 public:
-   KusKusStartlight() : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS) {};
+   KusKusStartlight(const MqlParam &params[]) : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS, params) {};
    ~KusKusStartlight() {};
    
    double getValue(string symbol, int bufferNum, int shift){
-      return iCustom(symbol, 0, _name, bufferNum, shift);
+      long rangePeriods = getParamLong(0, 30);
+      double priceSmoothing = getParamDouble(1, 0.3);
+      double indexSmoothing = getParamDouble(2, 0.3);
+      long drawType = getParamLong(3, 3);
+      long drawSize = getParamLong(4, 0);
+   
+      return iCustom(symbol, 
+                     0, 
+                     _name, 
+                     bufferNum, 
+                     shift,
+                     rangePeriods,
+                     priceSmoothing,
+                     indexSmoothing,
+                     drawType,
+                     drawSize);
    }
   };
