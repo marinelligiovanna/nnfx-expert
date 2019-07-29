@@ -8,7 +8,7 @@
 #property version   "1.00"
 #property strict
 
-#include "./IndicatorType.mqh"
+#include "../Enums.mqh"
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
@@ -29,7 +29,8 @@ public:
    ~Indicator();
    
    virtual double getValue(string symbol, int bufferNum, int shift);
-  };
+   virtual TradeSignal getSignal(string symbol, int shift);
+};
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
