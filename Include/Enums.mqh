@@ -28,3 +28,9 @@ enum IndicatorID {
    IND_KALMAN_FILTER,
    IND_KUSKUS_STARLIGHT
 };
+
+enum PositionSide {
+   POS_LONG=1,
+   POS_SHORT=-1,
+   POS_NEUTRAL=0
+};

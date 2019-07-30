@@ -29,3 +29,17 @@ struct AlgorithmSettings {
    IndicatorSettings confirmationIndicator;
    IndicatorSettings secondConfirmationIndicator;
 };
+
+struct Position {
+   string symbol;
+   double price;
+   long qty;
+   TradeSignal side;
+   
+   Position(){
+      symbol = NULL;
+      price = EMPTY_VALUE;
+      qty = EMPTY_VALUE;
+      side = NEUTRAL;
+   };
+};
