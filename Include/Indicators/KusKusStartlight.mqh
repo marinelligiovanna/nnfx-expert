@@ -13,12 +13,12 @@
 
 #include "./Indicator.mqh"
 
-class KusKusStartlight : public Indicator
-  {
-private:
+class KusKusStartlight : public Indicator {
 
 public:
-   KusKusStartlight(const MqlParam &params[]) : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS, params) {};
+   KusKusStartlight(const MqlParam &params[]) : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS, params) {
+      _bufferNum = 0;
+   };
    ~KusKusStartlight() {};
    
    double getValue(string symbol, int bufferNum, int shift){
@@ -39,4 +39,5 @@ public:
                      drawType,
                      drawSize);
    }
+   
   };

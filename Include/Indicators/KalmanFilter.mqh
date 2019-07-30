@@ -13,11 +13,7 @@
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
-class KalmanFilter : public Indicator
-  {
-private:
-   int _longBufferNum;
-   int _shortBufferNum;
+class KalmanFilter : public Indicator {
 public:
    KalmanFilter(const MqlParam &params[]) : Indicator("kalman-filter-indicator", CHART_INDICATOR, params) {
       _longBufferNum = 1;
@@ -43,15 +39,4 @@ public:
                      drawBegin);
    };
    
-   
-   TradeSignal getSignal(string symbol, int shift){
-      
-      double longVal = getValue(symbol, _longBufferNum, shift);
-      double shortVal = getValue(symbol, _shortBufferNum, shift);   
-      
-      if(longVal != EMPTY_VALUE && shortVal == EMPTY_VALUE) return LONG;
-      if(longVal == EMPTY_VALUE && shortVal != EMPTY_VALUE) return SHORT;
-      return NEUTRAL;
-   }
-   
-  };
+};
