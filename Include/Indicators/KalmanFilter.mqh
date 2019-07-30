@@ -9,13 +9,12 @@
 #property strict
 
 #include "./Indicator.mqh"
-#include "../Enums.mqh"
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 class KalmanFilter : public Indicator {
 public:
-   KalmanFilter(const MqlParam &params[]) : Indicator("kalman-filter-indicator", CHART_INDICATOR, params) {
+   KalmanFilter(const Param &params[]) : Indicator("kalman-filter-indicator", CHART_INDICATOR, params) {
       _longBufferNum = 1;
       _shortBufferNum = 0;
    };
@@ -23,10 +22,10 @@ public:
    ~KalmanFilter() {};
    
    double getValue(string symbol, int bufferNum, int shift){
-      long mode = getParamLong(0, 6);
-      double K = getParamDouble(1, 1.0);
-      double sharpness = getParamDouble(2, 1.0);
-      long drawBegin = getParamLong(3, 500);
+      long mode = getParamLong("mode", 6);
+      double k = getParamDouble("k", 1.0);
+      double sharpness = getParamDouble("sharpness", 1.0);
+      long drawBegin = getParamLong("drawBegin", 500);
    
       return iCustom(symbol, 
                      0, 
@@ -34,7 +33,7 @@ public:
                      bufferNum, 
                      shift, 
                      mode, 
-                     K, 
+                     k, 
                      sharpness, 
                      drawBegin);
    };

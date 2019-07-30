@@ -9,21 +9,31 @@
 
 const string SETTINGS_FOLDER = "./Presets";
 
-struct Indicator {
+struct Param {
+   string name;
+   ENUM_DATATYPE type;
+   double double_value;
+   long integer_value;
+   string string_value;
+};
+
+struct IndicatorSetting {
    string name;
    MqlParam params[];
 };
 
 struct Settings {
-   Indicator atr;
-   Indicator confirmation;
-   Indicator secondConfirmation;
+   IndicatorSetting atr;
+   IndicatorSetting confirmation;
+   IndicatorSetting secondConfirmation;
 };
 
+/*
 Settings loadSettings(string presetFileName){
    Settings settings;
    ResetLastError();
    int fHandle = FileOpen("..//" + SETTINGS_FOLDER +"//" + presetFileName, FILE_READ|FILE_TXT|FILE_ANSI);
+   
    if(fHandle != INVALID_HANDLE) {
       PrintFormat("%s file is available for reading",InpFileName);
       PrintFormat("File path: %s\\Files\\",TerminalInfoString(TERMINAL_DATA_PATH));
@@ -49,4 +59,4 @@ Settings loadSettings(string presetFileName){
    
    
    return settings;
-}
+}*/

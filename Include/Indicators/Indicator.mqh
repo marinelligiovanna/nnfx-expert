@@ -9,7 +9,7 @@
 #property strict
 
 #include "../Enums.mqh"
-
+#include "../Util.mqh"
 
 class Indicator {
 
@@ -22,7 +22,7 @@ protected:
    // Indicator attributes
    string _name;
    IndicatorType _type;
-   MqlParam _params[];
+   Param _params[];
    int _paramsSize;
    
    // Buffers to implement getSignal
@@ -34,9 +34,13 @@ protected:
    double getParamDouble(int index, double defaultValue);
    string getParamString(int index, string defaultValue);
    long getParamLong(int index, long defaultValue);
+   
+   double getParamDouble(string name, double defaultValue);
+   string getParamString(string name, string defaultValue);
+   long getParamLong(string name, long defaultValue);
   
 public:
-   Indicator(string name, IndicatorType type, const MqlParam &params[]);
+   Indicator(string name, IndicatorType type, const Param &params[]);
    ~Indicator();
    
    virtual double getValue(string symbol, int bufferNum, int shift);
@@ -44,7 +48,7 @@ public:
 };
 
 
-Indicator::Indicator(string name, IndicatorType type, const MqlParam &params[]) {
+Indicator::Indicator(string name, IndicatorType type, const Param &params[]) {
    _name = name;
    _type = type;
    
@@ -60,12 +64,15 @@ Indicator::Indicator(string name, IndicatorType type, const MqlParam &params[]) 
 /**
 * Return the value of a parameter of type double. If the parameter has no value set,
 * returns a defaultValue
+*
+* @param index The index on params array of the desired parameter.
+* @param defaultValue The default value of the parameter in the case it is not found.
 **/
 double Indicator::getParamDouble(int index, double defaultValue = EMPTY_VALUE) {
    if(index > _paramsSize - 1) return defaultValue;
    
    double paramValue = defaultValue;
-   MqlParam param = _params[index];
+   Param param = _params[index];
    
    switch(param.type){
       case TYPE_FLOAT:
@@ -79,14 +86,35 @@ double Indicator::getParamDouble(int index, double defaultValue = EMPTY_VALUE) {
 }
 
 /**
+* Return the value of a parameter of type double. If the parameter has no value set,
+* returns a defaultValue
+*
+* @param name The name of the desired parameter.
+* @param defaultValue The default value of the parameter in the case it is not found.
+**/
+double Indicator::getParamDouble(string name, double defaultValue = EMPTY_VALUE){
+   double paramValue = defaultValue;
+   
+   for(int i = 0; i < _paramsSize; i++){
+      if(StringToLower(name) == StringToLower(_params[i].name))
+         paramValue = _params[i].double_value;
+   }
+   
+   return paramValue == NULL || paramValue == EMPTY_VALUE ? defaultValue : paramValue;  
+}
+
+/**
 * Return the value of a parameter of type string. If the parameter has no value set,
 * returns a defaultValue
+*
+* @param index The index on params array of the desired parameter.
+* @param defaultValue The default value of the parameter in the case it is not found.
 **/
 string Indicator::getParamString(int index, string defaultValue = NULL) {
    if(index > _paramsSize - 1) return defaultValue;
    
    string paramValue = defaultValue;
-   MqlParam param = _params[index];
+   Param param = _params[index];
    
    if(param.type == TYPE_STRING)
       paramValue = param.string_value;
@@ -97,14 +125,35 @@ string Indicator::getParamString(int index, string defaultValue = NULL) {
 }
 
 /**
+* Return the value of a parameter of type string. If the parameter has no value set,
+* returns a defaultValue
+*
+*@param name The name of the desired parameter.
+* @param defaultValue The default value of the parameter in the case it is not found.
+**/
+string Indicator::getParamString(string name,string defaultValue = NULL){
+   string paramValue = defaultValue;
+   
+   for(int i = 0; i < _paramsSize; i++){
+      if(StringToLower(name) == StringToLower(_params[i].name))
+         paramValue = _params[i].string_value;
+   }
+   
+   return paramValue == NULL ? defaultValue : paramValue;   
+}
+
+/**
 * Return the value of a parameter of type long. If the parameter has no value set,
 * returns a defaultValue
+*
+* @param name The name of the desired parameter.
+* @param defaultValue The default value of the parameter in the case it is not found.
 **/
 long Indicator::getParamLong(int index, long defaultValue = NULL) {
    if(index > _paramsSize - 1) return defaultValue;
    
    long paramValue = defaultValue;
-   MqlParam param = _params[index];
+   Param param = _params[index];
    
    switch(param.type){
       case TYPE_DOUBLE:
@@ -117,6 +166,24 @@ long Indicator::getParamLong(int index, long defaultValue = NULL) {
    
    return paramValue == NULL || paramValue == EMPTY_VALUE ? defaultValue : paramValue;
    
+}
+
+/**
+* Return the value of a parameter of type long. If the parameter has no value set,
+* returns a defaultValue
+*
+* @param name The name of the desired parameter.
+* @param defaultValue The default value of the parameter in the case it is not found.
+**/
+long Indicator::getParamLong(string name,long defaultValue = NULL){
+   
+   long paramValue = defaultValue;
+   for(int i = 0; i < _paramsSize; i++){
+      if(StringToLower(name) == StringToLower(_params[i].name))
+         paramValue = _params[i].integer_value;
+   }
+   
+   return paramValue == NULL || paramValue == EMPTY_VALUE ? defaultValue : paramValue;
 }
 
 /**

@@ -16,17 +16,17 @@
 class KusKusStartlight : public Indicator {
 
 public:
-   KusKusStartlight(const MqlParam &params[]) : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS, params) {
+   KusKusStartlight(const Param &params[]) : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS, params) {
       _bufferNum = 0;
    };
    ~KusKusStartlight() {};
    
    double getValue(string symbol, int bufferNum, int shift){
-      long rangePeriods = getParamLong(0, 30);
-      double priceSmoothing = getParamDouble(1, 0.3);
-      double indexSmoothing = getParamDouble(2, 0.3);
-      long drawType = getParamLong(3, 3);
-      long drawSize = getParamLong(4, 0);
+      long rangePeriods = getParamLong("rangePeriods", 30);
+      double priceSmoothing = getParamDouble("priceSmoothing", 0.3);
+      double indexSmoothing = getParamDouble("indexSmoothing", 0.3);
+      long drawType = getParamLong("drawType", 3);
+      long drawSize = getParamLong("drawSize", 0);
    
       return iCustom(symbol, 
                      0, 
