@@ -7,7 +7,9 @@
 #property link      "https://www.mql4.com"
 #property strict
 
-const string SETTINGS_FOLDER = "./Presets";
+const string ATR_TAG = "#ATR";
+const string CONFIRMATION_INDICATOR_TAG = "#ConfirmationIndicator";
+const string SECOND_CONFIRMATION_INDICATOR_TAG = "#SecondConfirmationIndicator";
 
 struct Param {
    string name;
@@ -19,44 +21,91 @@ struct Param {
 
 struct IndicatorSetting {
    string name;
-   MqlParam params[];
+   Param params[];
 };
 
 struct Settings {
    IndicatorSetting atr;
-   IndicatorSetting confirmation;
-   IndicatorSetting secondConfirmation;
+   IndicatorSetting confirmationIndicator;
+   IndicatorSetting secondConfirmationIndicator;
 };
 
-/*
+
 Settings loadSettings(string presetFileName){
    Settings settings;
+   IndicatorSetting indSetting;
+   
    ResetLastError();
-   int fHandle = FileOpen("..//" + SETTINGS_FOLDER +"//" + presetFileName, FILE_READ|FILE_TXT|FILE_ANSI);
+   int fHandle = FileOpen(presetFileName, FILE_READ|FILE_TXT|FILE_ANSI);
+   
    
    if(fHandle != INVALID_HANDLE) {
-      PrintFormat("%s file is available for reading",InpFileName);
-      PrintFormat("File path: %s\\Files\\",TerminalInfoString(TERMINAL_DATA_PATH));
-      //--- additional variables
-      int    str_size;
-      string str;
-      //--- read data from the file
-      while(!FileIsEnding(file_handle))
-        {
-         //--- find out how many symbols are used for writing the time
-         str_size=FileReadInteger(file_handle,INT_VALUE);
-         //--- read the string
-         str=FileReadString(file_handle,str_size);
-         //--- print the string
-         PrintFormat(str);
-        }
-      //--- close the file
-      FileClose(file_handle);
-      PrintFormat("Data is read, %s file is closed",InpFileName);
+   
+      while(!FileIsEnding(fHandle)) {
+         int lineSize = FileReadInteger(fHandle,INT_VALUE);
+         const string line = FileReadString(fHandle,lineSize);
+         
+         if(line == ATR_TAG)
+            indSetting = settings.atr;
+         else if (line == CONFIRMATION_INDICATOR_TAG)
+            indSetting = settings.confirmationIndicator;
+         else if (line == SECOND_CONFIRMATION_INDICATOR_TAG)
+            indSetting = settings.secondConfirmationIndicator;
+         else if (line == "")
+            indSetting = indSetting;
+         else 
+            setIndicatorSetting(indSetting, line);
+        
+      }
+      FileClose(fHandle);
    }
    else
-      PrintFormat("Failed to open %s file, Error code = %d",InpFileName,GetLastError());
-   
+      PrintFormat("Failed to open %s file, Error code = %d",presetFileName,GetLastError());
    
    return settings;
-}*/
+}
+
+void setIndicatorSetting(IndicatorSetting &setting, string paramStr){
+   // Split the parameter using the '=' as separator.
+   string paramArr[];
+   StringSplit(paramStr, '=', paramArr);
+  
+   
+   if(ArraySize(paramArr) >= 2){
+      string name = paramArr[0];
+      string valueStr = paramArr[1];
+      
+      string nameLwr = name;
+      StringToLower(nameLwr);
+      // If the param is the indicator name, set it on settings and return;
+      if(nameLwr == "name"){
+         setting.name = valueStr;
+         return;
+      }
+      
+      // Else it is an indicator param.
+      // Resize the setting param to put one more element
+      int paramsSize = ArraySize(setting.params);
+      ArrayResize(setting.params, paramsSize + 1);
+      Param param;
+      
+      // Set the new param values
+      param.name = name;
+      
+      if(StringFind(valueStr, "\"", 0) >= 0){
+         param.type = TYPE_STRING;
+         param.string_value = valueStr;
+      }
+      else if (StringFind(valueStr, ".", 0) >= 0 && StringFind(valueStr, "\"", 0) < 0){
+         param.type = TYPE_DOUBLE;
+         param.double_value = StringToDouble(valueStr);
+      }
+      else {
+         param.type = TYPE_INT;
+         param.integer_value = StringToInteger(valueStr);
+      }
+      
+      setting.params[paramsSize] = param;
+   }
+   
+}

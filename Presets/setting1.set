@@ -1,0 +1,15 @@
+#ATR
+period=14
+
+#ConfirmationIndicator
+mode=6
+l=1.0
+sharpness=1.0
+drawBegin=500
+
+#SecondConfirmationIndicator
+rangePeriods=30
+priceSmoothing=0.3
+indexSmoothing=0.3
+drawType=3
+drawSize=0

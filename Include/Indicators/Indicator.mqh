@@ -96,7 +96,7 @@ double Indicator::getParamDouble(string name, double defaultValue = EMPTY_VALUE)
    double paramValue = defaultValue;
    
    for(int i = 0; i < _paramsSize; i++){
-      if(StringToLower(name) == StringToLower(_params[i].name))
+      if(name == _params[i].name)
          paramValue = _params[i].double_value;
    }
    
@@ -128,14 +128,14 @@ string Indicator::getParamString(int index, string defaultValue = NULL) {
 * Return the value of a parameter of type string. If the parameter has no value set,
 * returns a defaultValue
 *
-*@param name The name of the desired parameter.
+* @param name The name of the desired parameter.
 * @param defaultValue The default value of the parameter in the case it is not found.
 **/
 string Indicator::getParamString(string name,string defaultValue = NULL){
    string paramValue = defaultValue;
    
    for(int i = 0; i < _paramsSize; i++){
-      if(StringToLower(name) == StringToLower(_params[i].name))
+      if(name == _params[i].name)
          paramValue = _params[i].string_value;
    }
    
@@ -179,7 +179,7 @@ long Indicator::getParamLong(string name,long defaultValue = NULL){
    
    long paramValue = defaultValue;
    for(int i = 0; i < _paramsSize; i++){
-      if(StringToLower(name) == StringToLower(_params[i].name))
+      if(name == _params[i].name)
          paramValue = _params[i].integer_value;
    }
    
@@ -189,6 +189,9 @@ long Indicator::getParamLong(string name,long defaultValue = NULL){
 /**
 * Default implementation of getSignal function.
 * Returns a trade signal according the trading rule of the indicator type.
+*
+* @param symbol The Symbol of the instrument.
+* @param shift the shift in buffer to be considered when looking at indicator values.
 **/
 TradeSignal Indicator::getSignal(string symbol,int shift){
    
@@ -201,6 +204,12 @@ TradeSignal Indicator::getSignal(string symbol,int shift){
 
 }
 
+/**
+* Returns a trade signal for the Chart Indicator type.
+*
+* @param symbol The Symbol of the instrument.
+* @param shift the shift in buffer to be considered when looking at indicator values.
+**/
 TradeSignal Indicator::getChartIndicatorSignal(string symbol,int shift){
 
    double longVal = getValue(symbol, _longBufferNum, shift);
@@ -215,6 +224,12 @@ TradeSignal Indicator::getChartIndicatorSignal(string symbol,int shift){
 
 }
 
+/**
+* Returns a trade signal for the Zero Cross Indicator type.
+*
+* @param symbol The Symbol of the instrument.
+* @param shift the shift in buffer to be considered when looking at indicator values.
+**/
 TradeSignal Indicator::getZeroCrossIndicatorSignal(string symbol,int shift){
    double indicatorVal = getValue(symbol, _bufferNum, shift);
       
