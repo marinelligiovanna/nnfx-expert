@@ -11,29 +11,29 @@ const string ATR_TAG = "#ATR";
 const string CONFIRMATION_INDICATOR_TAG = "#ConfirmationIndicator";
 const string SECOND_CONFIRMATION_INDICATOR_TAG = "#SecondConfirmationIndicator";
 
-struct Param {
-   string name;
-   ENUM_DATATYPE type;
-   double double_value;
-   long integer_value;
-   string string_value;
+#include "./Structs.mqh"
+#include "./Enums.mqh"
+
+class Util {
+private:
+   static void setIndicatorSetting(IndicatorSettings &setting, string paramStr);
+   static IndicatorID getIndicatorID(string indicatorName);
+   static IndicatorType getIndicatorType(string indicatorName);
+public:
+   static AlgorithmSettings loadAlgorithmSettings(string presetFileName);
+
 };
 
-struct IndicatorSetting {
-   string name;
-   Param params[];
-};
-
-struct Settings {
-   IndicatorSetting atr;
-   IndicatorSetting confirmationIndicator;
-   IndicatorSetting secondConfirmationIndicator;
-};
-
-
-Settings loadSettings(string presetFileName){
-   Settings settings;
-   IndicatorSetting indSetting;
+/**
+* Load the settings of the algorithm to an AlgorithmSettings struct.
+* This method looks at the given file inside MQL4/Files folder
+* and build an AlgorithmSettings struct to be used as algorithm parameters
+*
+* @param presetFileName the name of the file containing the algorithm settings
+**/
+static AlgorithmSettings Util::loadAlgorithmSettings(string presetFileName){
+   AlgorithmSettings settings;
+   IndicatorSettings indSetting;
    
    ResetLastError();
    int fHandle = FileOpen(presetFileName, FILE_READ|FILE_TXT|FILE_ANSI);
@@ -60,12 +60,12 @@ Settings loadSettings(string presetFileName){
       FileClose(fHandle);
    }
    else
-      PrintFormat("Failed to open %s file, Error code = %d",presetFileName,GetLastError());
+      PrintFormat("Failed to open %s file, Error code = %d", presetFileName, GetLastError());
    
    return settings;
 }
 
-void setIndicatorSetting(IndicatorSetting &setting, string paramStr){
+static void Util::setIndicatorSetting(IndicatorSettings &setting, string paramStr){
    // Split the parameter using the '=' as separator.
    string paramArr[];
    StringSplit(paramStr, '=', paramArr);
@@ -80,6 +80,8 @@ void setIndicatorSetting(IndicatorSetting &setting, string paramStr){
       // If the param is the indicator name, set it on settings and return;
       if(nameLwr == "name"){
          setting.name = valueStr;
+         setting.id = getIndicatorID(valueStr);
+         setting.type = getIndicatorType(valueStr);
          return;
       }
       
@@ -108,4 +110,27 @@ void setIndicatorSetting(IndicatorSetting &setting, string paramStr){
       setting.params[paramsSize] = param;
    }
    
+}
+
+static IndicatorID Util::getIndicatorID(string indicatorName){
+   
+   if(indicatorName == "ATR" || indicatorName == "atr")
+      return IND_ATR;
+   if(indicatorName == "kalman-filter-indicator")
+      return IND_KALMAN_FILTER;
+   if(indicatorName == "kuskus-starlight-indicator")
+      return IND_KUSKUS_STARLIGHT;
+   
+   
+   return IND_DEFAULT;
+}
+
+static IndicatorType Util::getIndicatorType(string indicatorName){
+   if(indicatorName == "kalman-filter-indicator")
+      return CHART_INDICATOR;
+   if(indicatorName == "kuskus-starlight-indicator")
+      return ZERO_LINE_CROSS;
+   
+   
+   return NONE;
 }

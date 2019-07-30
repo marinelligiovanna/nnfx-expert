@@ -16,7 +16,7 @@
 class KusKusStartlight : public Indicator {
 
 public:
-   KusKusStartlight(const Param &params[]) : Indicator("kuskus-starlight-indicator", ZERO_LINE_CROSS, params) {
+   KusKusStartlight(IndicatorSettings& settings) : Indicator(settings) {
       _bufferNum = 0;
    };
    ~KusKusStartlight() {};
@@ -30,7 +30,7 @@ public:
    
       return iCustom(symbol, 
                      0, 
-                     _name, 
+                     _settings.name, 
                      bufferNum, 
                      shift,
                      rangePeriods,

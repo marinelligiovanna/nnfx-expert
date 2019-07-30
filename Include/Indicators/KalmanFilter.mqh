@@ -14,7 +14,7 @@
 //+------------------------------------------------------------------+
 class KalmanFilter : public Indicator {
 public:
-   KalmanFilter(const Param &params[]) : Indicator("kalman-filter-indicator", CHART_INDICATOR, params) {
+   KalmanFilter(IndicatorSettings& settings) : Indicator(settings) {
       _longBufferNum = 1;
       _shortBufferNum = 0;
    };
@@ -29,7 +29,7 @@ public:
    
       return iCustom(symbol, 
                      0, 
-                     _name, 
+                     _settings.name, 
                      bufferNum, 
                      shift, 
                      mode, 

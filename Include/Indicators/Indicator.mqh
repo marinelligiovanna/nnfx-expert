@@ -8,7 +8,6 @@
 #property version   "1.00"
 #property strict
 
-#include "../Enums.mqh"
 #include "../Util.mqh"
 
 class Indicator {
@@ -20,9 +19,7 @@ private:
 protected:
    
    // Indicator attributes
-   string _name;
-   IndicatorType _type;
-   Param _params[];
+   IndicatorSettings _settings;
    int _paramsSize;
    
    // Buffers to implement getSignal
@@ -40,7 +37,7 @@ protected:
    long getParamLong(string name, long defaultValue);
   
 public:
-   Indicator(string name, IndicatorType type, const Param &params[]);
+   Indicator(IndicatorSettings& settings);
    ~Indicator();
    
    virtual double getValue(string symbol, int bufferNum, int shift);
@@ -48,17 +45,9 @@ public:
 };
 
 
-Indicator::Indicator(string name, IndicatorType type, const Param &params[]) {
-   _name = name;
-   _type = type;
-   
-   // Copy params to a protected variable. 
-   _paramsSize = ArraySize(params);
-   ArrayResize(_params, _paramsSize);
-   
-   for(int i = 0; i < _paramsSize; i++){
-      _params[i] = params[i];
-   }
+Indicator::Indicator(IndicatorSettings& settings) {
+   _settings = settings;
+   _paramsSize = ArraySize(_settings.params);
 }
 
 /**
@@ -72,7 +61,7 @@ double Indicator::getParamDouble(int index, double defaultValue = EMPTY_VALUE) {
    if(index > _paramsSize - 1) return defaultValue;
    
    double paramValue = defaultValue;
-   Param param = _params[index];
+   Param param = _settings.params[index];
    
    switch(param.type){
       case TYPE_FLOAT:
@@ -96,8 +85,8 @@ double Indicator::getParamDouble(string name, double defaultValue = EMPTY_VALUE)
    double paramValue = defaultValue;
    
    for(int i = 0; i < _paramsSize; i++){
-      if(name == _params[i].name)
-         paramValue = _params[i].double_value;
+      if(name == _settings.params[i].name)
+         paramValue = _settings.params[i].double_value;
    }
    
    return paramValue == NULL || paramValue == EMPTY_VALUE ? defaultValue : paramValue;  
@@ -114,7 +103,7 @@ string Indicator::getParamString(int index, string defaultValue = NULL) {
    if(index > _paramsSize - 1) return defaultValue;
    
    string paramValue = defaultValue;
-   Param param = _params[index];
+   Param param = _settings.params[index];
    
    if(param.type == TYPE_STRING)
       paramValue = param.string_value;
@@ -135,8 +124,8 @@ string Indicator::getParamString(string name,string defaultValue = NULL){
    string paramValue = defaultValue;
    
    for(int i = 0; i < _paramsSize; i++){
-      if(name == _params[i].name)
-         paramValue = _params[i].string_value;
+      if(name == _settings.params[i].name)
+         paramValue = _settings.params[i].string_value;
    }
    
    return paramValue == NULL ? defaultValue : paramValue;   
@@ -153,7 +142,7 @@ long Indicator::getParamLong(int index, long defaultValue = NULL) {
    if(index > _paramsSize - 1) return defaultValue;
    
    long paramValue = defaultValue;
-   Param param = _params[index];
+   Param param = _settings.params[index];
    
    switch(param.type){
       case TYPE_DOUBLE:
@@ -179,8 +168,8 @@ long Indicator::getParamLong(string name,long defaultValue = NULL){
    
    long paramValue = defaultValue;
    for(int i = 0; i < _paramsSize; i++){
-      if(name == _params[i].name)
-         paramValue = _params[i].integer_value;
+      if(name == _settings.params[i].name)
+         paramValue = _settings.params[i].integer_value;
    }
    
    return paramValue == NULL || paramValue == EMPTY_VALUE ? defaultValue : paramValue;
@@ -195,9 +184,9 @@ long Indicator::getParamLong(string name,long defaultValue = NULL){
 **/
 TradeSignal Indicator::getSignal(string symbol,int shift){
    
-   if(_type == CHART_INDICATOR) 
+   if(_settings.type == CHART_INDICATOR) 
       return getChartIndicatorSignal(symbol, shift);
-   else if(_type == ZERO_LINE_CROSS) 
+   else if(_settings.type == ZERO_LINE_CROSS) 
       return getZeroCrossIndicatorSignal(symbol, shift);
    else 
       return NEUTRAL;

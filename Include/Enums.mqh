@@ -17,6 +17,14 @@ enum TradeSignal {
 enum IndicatorType {
    TWO_LINES_CROSS,
    ZERO_LINE_CROSS,
-   CHART_INDICATOR
+   CHART_INDICATOR,
+   NONE
 };
 
+
+enum IndicatorID {
+   IND_DEFAULT,
+   IND_ATR,
+   IND_KALMAN_FILTER,
+   IND_KUSKUS_STARLIGHT
+};
