@@ -20,12 +20,12 @@ private:
    Position _position;
    
    ATR* _atr;
-   Indicator* _confIndicator;
-   Indicator* _secondConfIndicator;
+   Indicator* _ci;
+   Indicator* _ci2;
    
    double _atrVal;
-   TradeSignal _confIndicatorSignal;
-   TradeSignal _secondConfIndicatorSignal;
+   TradeSignal _ciSignal;
+   TradeSignal _ci2Signal;
    TradeSignal _newSignal;
    
 public:
@@ -43,21 +43,21 @@ EA::EA(string symbol, string settingsFileName){
    _settings = Util::loadAlgorithmSettings(settingsFileName);
    
    _atr = Indicators::getInstance(_settings.atr);
-   _confIndicator = Indicators::getInstance(_settings.confirmationIndicator);
-   _secondConfIndicator = Indicators::getInstance(_settings.secondConfirmationIndicator);
+   _ci = Indicators::getInstance(_settings.ci);
+   _ci2 = Indicators::getInstance(_settings.ci2);
    
 }
 
 void EA::setIndicators(int shift){
    _atrVal = _atr.getValue(_symbol, 0, shift);
-   _confIndicatorSignal = _confIndicator.getSignal(_symbol, shift);
-   _secondConfIndicatorSignal = _secondConfIndicator.getSignal(_symbol, shift);
+   _ciSignal = _ci.getSignal(_symbol, shift);
+   _ci2Signal = _ci2.getSignal(_symbol, shift);
    
    // Set the new trading signal according the indicators.
-   if(_confIndicatorSignal != _secondConfIndicatorSignal)
+   if(_ciSignal != _ci2Signal)
       _newSignal = NEUTRAL;
    else
-      _newSignal = _confIndicatorSignal;
+      _newSignal = _ciSignal;
    
 }
 
@@ -68,8 +68,8 @@ bool EA::signalChanged(void){
 EA::~EA() {
    
    delete(_atr);
-   delete(_confIndicator);
-   delete(_secondConfIndicator);
+   delete(_ci);
+   delete(_ci2);
 
 }
 //+------------------------------------------------------------------+

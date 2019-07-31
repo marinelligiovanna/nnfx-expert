@@ -24,10 +24,25 @@ struct IndicatorSettings {
    Param params[];
 };
 
+/**
+* Struct containing all the settings of an algorithm run.
+* Those settings will be loaded according a preset file
+* saved on Files folder of MQL4.
+**/
 struct AlgorithmSettings {
-   IndicatorSettings atr;
-   IndicatorSettings confirmationIndicator;
-   IndicatorSettings secondConfirmationIndicator;
+   double risk;
+   double atr_sl_multiplier;
+   double atr_tp_multiplier;
+   
+   IndicatorSettings atr; // ATR
+   IndicatorSettings ci;  // Confirmation Indicator
+   IndicatorSettings ci2; // Second Confirmation Indicator
+   
+   AlgorithmSettings(){
+      risk = 0.02;
+      atr_sl_multiplier = 1.5;
+      atr_tp_multiplier = 1.0;
+   }
 };
 
 struct Position {

@@ -8,8 +8,8 @@
 #property strict
 
 const string ATR_TAG = "#ATR";
-const string CONFIRMATION_INDICATOR_TAG = "#ConfirmationIndicator";
-const string SECOND_CONFIRMATION_INDICATOR_TAG = "#SecondConfirmationIndicator";
+const string CI_TAG = "#ConfirmationIndicator";
+const string SECOND_CI_TAG = "#SecondConfirmationIndicator";
 
 #include "./Structs.mqh"
 #include "./Enums.mqh"
@@ -47,10 +47,10 @@ static AlgorithmSettings Util::loadAlgorithmSettings(string presetFileName){
          
          if(line == ATR_TAG)
             indSetting = settings.atr;
-         else if (line == CONFIRMATION_INDICATOR_TAG)
-            indSetting = settings.confirmationIndicator;
-         else if (line == SECOND_CONFIRMATION_INDICATOR_TAG)
-            indSetting = settings.secondConfirmationIndicator;
+         else if (line == CI_TAG)
+            indSetting = settings.ci;
+         else if (line == SECOND_CI_TAG)
+            indSetting = settings.ci2;
          else if (line == "")
             indSetting = indSetting;
          else 
